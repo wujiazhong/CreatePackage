@@ -14,10 +14,8 @@ class URILoader:
     @staticmethod
     def loadURI(uri, file_name, sur_msg=''):   
         socket.setdefaulttimeout(600)     
-        try:
-            print(uri)     
-            repos_set_json = urllib.request.urlopen(uri, None, 600).read().decode('utf-8')
-            
+        try:    
+            repos_set_json = urllib.request.urlopen(uri, None, 600).read().decode('utf-8')        
         except urllib.error.HTTPError:
             raise Exception(URILoader.HTTP_ERROR_MSG.format(file_name)+sur_msg)           
         except UnicodeDecodeError:

@@ -20,8 +20,8 @@ class JSONObj:
 
 def escapeStr(raw_str):  
     map_list = [ 
-                    (re.compile(r'\\[^u]'), r'\u0022'), # '\' is illegal char in json
-                    (re.compile(r'\"'), r'\u005C')      # '"' is illegal char in json
+                    (re.compile(r'\\(?!u[0-9a-fA-F]{4})'), r'\u005C'),  # '\' is illegal char in json
+                    (re.compile(r'\"'), r'\u0022')      # '"' is illegal char in json
                 ]  
     
     for item in map_list:

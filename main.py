@@ -9,30 +9,32 @@ from common.runScriptThread import runScriptThread
 from CreateLicenseIndex.createLicenseIndex import createLicenseIndex
 from CreateExtensionIndex.createExtensionIndex import createExtensionIndex 
 from CreateLangIndex.createLangIndex import createLangIndex 
+from common.packageTool import zip_dir
 
-import os,traceback,zipfile
+import os,traceback
 
 LOG_DIR_NAME = 'log'
 PACAKAGE = "Package"
 LOG_NAME = 'main.log'
 ZIP_NAME = '{0}.zip'
+ABBR_PRODUCT = 'stats'
+WHOLE_PRO_NAME = 'Statistics'    
  
 if __name__ == '__main__':
-    '''
     usage = "usage: %prog [options] arg1"  
     parser = OptionParser(usage)  
-    parser.add_option("-s", "--savedir", dest="savedir", action='store', help="Directory to save Statistics.zip")
-    parser.add_option("-p", "--product", dest="productName", action='store', help="Choose license index for which product: 1. modeler 2. stats.")
+    parser.add_option("-o", "--outdir", dest="outdir", action='store', help="Directory to save Statistics.zip")
+    #parser.add_option("-p", "--product", dest="productName", action='store', help="Choose license index for which product: 1. modeler 2. stats.")
     (options, args) = parser.parse_args() 
     
-    if not os.path.isdir(options.savedir):
+    if not os.path.isdir(options.outdir):
         parser.error("Please input a valid directory to save Statistics.zip.")
-    if options.productName != "modeler" and options.productName != "stats":  
-        parser.error("Please input valid product name modeler or stats (casesensitive) for your index file")'''
+    #if options.productName.lower() != "modeler" and options.productName.lower() != "stats":  
+    #    parser.error("Please input valid product name modeler or stats (casesensitive) for your index file")
     
     try: 
-        #savePath = os.path.join(options.savedir,PACAKAGE)
-        savePath = os.path.join(r'C:\Users\wujz\Desktop',PACAKAGE)
+        savePath = os.path.join(options.outdir,PACAKAGE)
+        #savePath = os.path.join(r'C:\Users\wujz\Desktop',PACAKAGE)
         logPath = os.path.join(savePath,LOG_DIR_NAME)
         os.mkdir(savePath)
         os.mkdir(logPath)
@@ -44,20 +46,20 @@ if __name__ == '__main__':
             
             # create index for extension
             mainLogger.info("'CreateExtensionIndex start...")
-            ext_path = createExtensionIndex(savePath, 'stats') 
+            ext_path = createExtensionIndex(savePath, ABBR_PRODUCT) 
             print(ext_path)
             mainLogger.info("'CreateExtensionIndex complete...")
             
             # create thread to get index for license
             mainLogger.info("'CreateLicenseIndex thread start...")
-            runCreateLicenseIndex = runScriptThread(createLicenseIndex, savePath, 'stats', ext_path)
+            runCreateLicenseIndex = runScriptThread(createLicenseIndex, savePath, ABBR_PRODUCT, ext_path)
             runCreateLicenseIndex.setDaemon(True)
             runCreateLicenseIndex.start()
 
             
             # create thread to get index for language
             mainLogger.info("CreateLangIndex thread start ...")
-            runCreateLangIndex = runScriptThread(createLangIndex, savePath, 'stats', ext_path)
+            runCreateLangIndex = runScriptThread(createLangIndex, savePath, ABBR_PRODUCT, ext_path)
             runCreateLangIndex.setDaemon(True)
             runCreateLangIndex.start()
             
@@ -69,14 +71,8 @@ if __name__ == '__main__':
             # start to compress files to ZIP
             if not runCreateLangIndex.isAlive() and not runCreateLicenseIndex.isAlive():
                 mainLogger.info("Start to compress files into package ...")
-                print(os.listdir(savePath))
-                zippath = r'C:\Users\wujz\Desktop\Package\{0}'.format(ZIP_NAME.format('Statistics'))
-                destZip = zipfile.ZipFile(zippath, "w")  
-                filelist = os.listdir(savePath)
-                for file in filelist:
-                    if zippath!=os.path.join(savePath,file) and file!=LOG_DIR_NAME:
-                        destZip.write(os.path.join(savePath,file),file)
-                destZip.close()
+                zippath = os.path.join(savePath,ZIP_NAME.format(WHOLE_PRO_NAME))
+                zip_dir(savePath, zippath)
                 mainLogger.info("Compression complete ...")
             
         except Exception as e:

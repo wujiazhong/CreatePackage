@@ -60,7 +60,6 @@ def createLangIndex(*args):
                     if 'HTTPError' in str(e):
                         # some repositories do not have lang file, by default use en file in index for extension file
                         lang_json_str = LangPropObj.generateJSONStr(repo_name,repo[EXT_KEY]['Summary'],repo[EXT_KEY]['Description'])
-                        print(lang_json_str)
                     else:
                         raise e
 
