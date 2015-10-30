@@ -21,7 +21,7 @@ import shutil
 SPE_DOWNLOAD_URL = "https://github.com/IBMPredictiveAnalytics/repos_name/raw/master/repos_name.spe"
 IMG_DOWNLOAD_URL = "https://raw.githubusercontent.com/IBMPredictiveAnalytics/repos_name/master/default.png"
 FILE_NAME= "MANIFEST.MF"
-RAW_INDEX_FILE = 'index_for_{0}.json'
+RAW_INDEX_FILE = 'extension_index.json'
 INDENT = '\t'
 LOG_INFO = "createExtensionIndex.log"
 META_DIR = 'META-INF' 
@@ -34,7 +34,7 @@ def createExtensionIndex(*args):
     product = args[1]
     
     
-    START_WORDS = "{\n\"productname_extension_index\":[\n"    
+    START_WORDS = "{\n\"extension_index\":[\n"    
     cur_time = time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()))  
     root_spe_dir = os.path.join(indexdir,"spe"+cur_time) 
     root_log_dir = os.path.join(indexdir, LOG_DIR_NAME)   
@@ -46,10 +46,10 @@ def createExtensionIndex(*args):
     except IOError as e:  
         raise IOError("IOError: Need permission to write in "+indexdir)
     
-    index_for_extension = re.sub('productname', product, START_WORDS)
+    index_for_extension = START_WORDS
     whole_product_name = getWholeProductName(product) 
     extLogger.info("start to get repo data from github ...")
-    ext_output_path = os.path.join(indexdir, RAW_INDEX_FILE.format(product))
+    ext_output_path = os.path.join(indexdir, RAW_INDEX_FILE)
     
     i=0
     ok_repo_num = 0
@@ -131,7 +131,7 @@ def createExtensionIndex(*args):
             
             
 def getWholeProductName(product_name):
-    if(product_name == "stats"):
+    if(product_name.lower() == "stats"):
         return "SPSS Statistics"
     else:
         return "SPSS Modeler"

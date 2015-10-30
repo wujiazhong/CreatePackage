@@ -18,7 +18,7 @@ PACAKAGE = "Package"
 LOG_NAME = 'main.log'
 ZIP_NAME = '{0}.zip'
 ABBR_PRODUCT = 'stats'
-WHOLE_PRO_NAME = 'Statistics'    
+WHOLE_PRO_NAME = 'extension_index_resbundles'    
  
 if __name__ == '__main__':
     usage = "usage: %prog [options] arg1"  
@@ -44,37 +44,42 @@ if __name__ == '__main__':
         try:
             mainLogger.info("Main Scrit start ... ")
             
-            # create index for extension
-            mainLogger.info("'CreateExtensionIndex start...")
-            ext_path = createExtensionIndex(savePath, ABBR_PRODUCT) 
-            print(ext_path)
-            mainLogger.info("'CreateExtensionIndex complete...")
-            
-            # create thread to get index for license
-            mainLogger.info("'CreateLicenseIndex thread start...")
-            runCreateLicenseIndex = runScriptThread(createLicenseIndex, savePath, ABBR_PRODUCT, ext_path)
-            runCreateLicenseIndex.setDaemon(True)
-            runCreateLicenseIndex.start()
+            try:
+                # create index for extension
+                mainLogger.info("'CreateExtensionIndex start...")
+                ext_path = createExtensionIndex(savePath, ABBR_PRODUCT) 
+                print(ext_path)
+                mainLogger.info("'CreateExtensionIndex complete...")
+                
+                # create thread to get index for license
+                mainLogger.info("'CreateLicenseIndex thread start...")
+                runCreateLicenseIndex = runScriptThread(createLicenseIndex, savePath, ABBR_PRODUCT, ext_path)
+                runCreateLicenseIndex.setDaemon(True)
+                runCreateLicenseIndex.start()
+    
+                
+                # create thread to get index for language
+                mainLogger.info("CreateLangIndex thread start ...")
+                runCreateLangIndex = runScriptThread(createLangIndex, savePath, ABBR_PRODUCT, ext_path)
+                runCreateLangIndex.setDaemon(True)
+                runCreateLangIndex.start()
+                
+                runCreateLicenseIndex.join()
+                runCreateLangIndex.join()
+                mainLogger.info("'CreateLicenseIndex thread complete...")
+                mainLogger.info("'CreateLangIndex thread complete...")
+            except Exception as e:
+                raise e
 
-            
-            # create thread to get index for language
-            mainLogger.info("CreateLangIndex thread start ...")
-            runCreateLangIndex = runScriptThread(createLangIndex, savePath, ABBR_PRODUCT, ext_path)
-            runCreateLangIndex.setDaemon(True)
-            runCreateLangIndex.start()
-            
-            runCreateLicenseIndex.join()
-            runCreateLangIndex.join()
-            mainLogger.info("'CreateLicenseIndex thread complete...")
-            mainLogger.info("'CreateLangIndex thread complete...")
-            
             # start to compress files to ZIP
-            if not runCreateLangIndex.isAlive() and not runCreateLicenseIndex.isAlive():
-                mainLogger.info("Start to compress files into package ...")
-                zippath = os.path.join(savePath,ZIP_NAME.format(WHOLE_PRO_NAME))
-                zip_dir(savePath, zippath)
-                mainLogger.info("Compression complete ...")
-            
+            try:
+                if not runCreateLangIndex.isAlive() and not runCreateLicenseIndex.isAlive():
+                    mainLogger.info("Start to compress files into package ...")
+                    zippath = os.path.join(savePath,ZIP_NAME.format(WHOLE_PRO_NAME))
+                    zip_dir(savePath, zippath)
+                    mainLogger.info("Compression complete ...")
+            except Exception as e:
+                raise e   
         except Exception as e:
             mainLogger.error(str(e),e)
             raise e  

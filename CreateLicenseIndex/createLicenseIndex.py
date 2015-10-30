@@ -20,7 +20,7 @@ LICENSE_FILE_NAME = 0
 REPOS_NAME_LIST = 1
 KEY_LIST = ["license_file_name","repository_names"]
 LOG_INFO = "createLicenseIndex.log"
-LICENSE_DIR = 'license'
+LICENSE_DIR = 'licenses'
 LOG_DIR_NAME = 'log'
 
 def createLicenseIndex(*args):
