@@ -12,7 +12,7 @@ from CreateLicenseIndex.LicenseIndexItemStr import LicenseIndexItemStr
 import os
 
 #RAW_REPOS_SET_URI = "https://raw.githubusercontent.com/IBMPredictiveAnalytics/IBMPredictiveAnalytics.github.io/master/resbundles/{0}/index_for_{1}.json"
-RAW_INDEX_KEY = "{0}_extension_index"
+RAW_INDEX_KEY = "extension_index"
 RAW_LICENSE_URI = "https://raw.githubusercontent.com/IBMPredictiveAnalytics/{0}/master/LICENSE"
 RAW_LICENSE_NAME = "license{0}.txt"
 INDENT = '\t'
@@ -21,21 +21,21 @@ REPOS_NAME_LIST = 1
 KEY_LIST = ["license_file_name","repository_names"]
 LOG_INFO = "createLicenseIndex.log"
 LICENSE_DIR = 'licenses'
+LIC_INDEX_FILE = 'extension_license_index.json'
 LOG_DIR_NAME = 'log'
 
 def createLicenseIndex(*args):
     outdir = args[0]
-    product = args[1]
-    ext_path = args[2]        
+    ext_path = args[1]        
     
-    if product.lower() == "modeler":
+    #if product.lower() == "modeler":
         #repos_set_uri = RAW_REPOS_SET_URI.format('modeler','modeler')
-        index_key = RAW_INDEX_KEY.format('modeler')
-    elif product.lower() == 'stats':
+        #index_key = RAW_INDEX_KEY.format('modeler')
+    #elif product.lower() == 'stats':
         # wrong spell of statistics
         #repos_set_uri = RAW_REPOS_SET_URI.format('statisitcs','stats') 
-        index_key = RAW_INDEX_KEY.format('stats')
-    
+        #index_key = RAW_INDEX_KEY.format('stats')
+    index_key = RAW_INDEX_KEY
     try:   
         license_obj_list = []        
         try:
@@ -94,7 +94,7 @@ def createLicenseIndex(*args):
 
         index_content = index_content[0:-2]
         index_content += '\n' + INDENT + "]\n}"
-        index_fp = open(os.path.join(lic_path,'license_index.json'),'w',encoding='utf-8')
+        index_fp = open(os.path.join(lic_path,LIC_INDEX_FILE),'w',encoding='utf-8')
         index_fp.write(index_content)
         licenseLogger.info("CreateLicenseIndex action succeeded!")
     except Exception as e:

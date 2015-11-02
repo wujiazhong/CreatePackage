@@ -28,7 +28,7 @@ if __name__ == '__main__':
         parser.error("Please input a valid directory of extension index file.")
     
     try:
-        createLangIndex(options.outdir, options.productName, options.extdir)
+        createLangIndex(options.outdir, options.extdir)
     except IOError as e:
         print(str(e))
     except Exception as e:

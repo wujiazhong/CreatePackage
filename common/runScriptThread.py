@@ -12,4 +12,7 @@ class runScriptThread(threading.Thread): #The timer class is derived from the cl
         self.funcName = funcName
     
     def run(self): #Overwrite run() method, put what you want the thread do here
-        self.funcName(*(self.args))            
+        try:
+            self.funcName(*(self.args)) 
+        except Exception as e:
+            raise e           

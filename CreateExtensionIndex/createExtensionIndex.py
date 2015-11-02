@@ -21,7 +21,7 @@ import shutil
 SPE_DOWNLOAD_URL = "https://github.com/IBMPredictiveAnalytics/repos_name/raw/master/repos_name.spe"
 IMG_DOWNLOAD_URL = "https://raw.githubusercontent.com/IBMPredictiveAnalytics/repos_name/master/default.png"
 FILE_NAME= "MANIFEST.MF"
-RAW_INDEX_FILE = 'extension_index.json'
+RAW_INDEX_FILE = 'extension_info_index.json'
 INDENT = '\t'
 LOG_INFO = "createExtensionIndex.log"
 META_DIR = 'META-INF' 
@@ -131,7 +131,7 @@ def createExtensionIndex(*args):
             
             
 def getWholeProductName(product_name):
-    if(product_name.lower() == "stats"):
+    if(product_name == "stats"):
         return "SPSS Statistics"
     else:
         return "SPSS Modeler"

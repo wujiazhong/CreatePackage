@@ -15,20 +15,19 @@ LANG_LIST = ['en', 'de', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'pt_BR', 'ru', 'zh_
 EXT_KEY = 'extension_detail_info'
 LOG_INFO = 'createLangIndex.log'
 RAW_REPO_LANG_URI = 'https://raw.githubusercontent.com/IBMPredictiveAnalytics/{0}/master/src/lang/{1}/{0}_{1}.properties'
-RAW_INDEX_KEY = "{0}_extension_index"
+RAW_INDEX_KEY = "extension_index"
 INDENT = '\t'
 LANG_INDEX_PRE = "{\n"+INDENT+"\"extension_lang\":[\n"+INDENT*2
 
 def createLangIndex(*args):
     outdir = args[0]
-    product = args[1]
-    ext_path = args[2]
+    ext_path = args[1]
      
-    if product == "modeler":
-        index_key = RAW_INDEX_KEY.format('modeler')
-    elif product == 'stats':
-        index_key = RAW_INDEX_KEY.format('stats')
-    
+    #if product == "modeler":
+    #    index_key = RAW_INDEX_KEY.format('modeler')
+    #elif product == 'stats':
+    #    index_key = RAW_INDEX_KEY.format('stats')
+    index_key = RAW_INDEX_KEY
     try:
         try:
             lang_path = os.path.join(outdir,LANG_DIR) 
@@ -45,9 +44,13 @@ def createLangIndex(*args):
         
         for lang_item in LANG_LIST:
             fp_content = LANG_INDEX_PRE
+            langLogger.info("Start to get '"+lang_item+"' file")
+            i=0
             for repo in repos_set_json_index:
                 try:
                     repo_name = repo["repository"]
+                    i+=1
+                    langLogger.info(lang_item+": "+str(i)+" repo "+repo_name)
                 except Exception:
                     raise Exception("At least one repository in index file does not have repo name. Please check!")    
                 
